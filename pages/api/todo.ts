@@ -1,15 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import pool from '@/utils/db';
-import { ErrorMessage, TodoItem } from '@/utils/types';
+import {db} from '@/utils/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 
 
-type Data = TodoItem[] | ErrorMessage
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   const { method } = req;
 
@@ -17,18 +15,16 @@ export default async function handler(
     case 'GET':
       try {
         const { completed } = req.query;
-        let query = 'SELECT * FROM todo';
-        const values = [];
-    
-        if (completed !== undefined) {
-          query += ' WHERE completed = $1';
-          values.push(completed);
-        }
-    
-        query += ' ORDER BY id DESC';
-    
-        const { rows } = await pool.query(query, values);
-        res.status(200).json(rows);
+
+        const results = await db.todo.findMany({
+          where: {
+            completed: completed !== undefined ? completed === 'true' : undefined,
+          },
+          orderBy: {
+            id: 'desc',
+          },
+        });
+        res.status(200).json(results);
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
@@ -37,8 +33,13 @@ export default async function handler(
     case 'POST':
       try {
         const { text, completed } = req.body;
-        const { rows } = await pool.query('INSERT INTO todo (text, completed) VALUES ($1, $2) RETURNING id, text, completed', [text, completed]);
-        res.status(201).json(rows[0]);
+        const result = await db.todo.create({
+          data: {
+            text,
+            completed,
+          },
+        });
+        res.status(201).json(result);
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
@@ -48,9 +49,15 @@ export default async function handler(
       try {
         const { id } = req.query;
         const { completed } = req.body;
-        const data = await pool.query('UPDATE todo SET completed = $1 WHERE id = $2', [ completed, id]);
-        // console.log("rows", data);
-        res.status(200).json(data as any);
+        const result = await db.todo.update({
+          where: {
+            id: parseInt(id as string),
+          },
+          data: {
+            completed,
+          },
+        });
+        res.status(200).json(result);
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
@@ -59,13 +66,15 @@ export default async function handler(
     case 'DELETE':
       try {
         const { id } = req.query;
-        let queryString = 'DELETE FROM todo';
-        let queryParams = [];
         if (id) {
-          queryString += ' WHERE id = $1';
-          queryParams.push(id);
+          await db.todo.delete({
+            where: {
+              id: parseInt(id as string),
+            },
+          })
+        } else {
+          await db.todo.deleteMany();
         }
-        await pool.query(queryString, queryParams);
         res.status(204).end();
       } catch (error) {
         console.error(error);

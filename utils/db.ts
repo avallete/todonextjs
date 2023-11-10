@@ -1,14 +1,7 @@
-import { Pool } from 'pg';
+import { PrismaClient } from '@prisma/client'
 
-const pool = new Pool({
-  host: process.env.PGHOST,
-  user: process.env.PGUSER,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const db = new PrismaClient({
+  log: process.env.DEBUG_PRISMA ? ['query', 'error'] : []
+})
 
-export default pool
+export {db}

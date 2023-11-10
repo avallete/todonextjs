@@ -1,43 +1,37 @@
-import pool from '@/utils/db';
+import { db } from '@/utils/db';
 import { ErrorMessage, TodoItem } from '@/utils/types';
+import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = TodoItem[] | ErrorMessage;
+
+type TodoWhereParams = Prisma.todoWhereInput
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   try {
-    let numArgs = 1;
     const { search, completed, size } = req.query;
-    let query = 'SELECT * FROM todo WHERE';
-    const values = [];
+    const whereInput: TodoWhereParams = {};
+    const limit = size ? parseInt(size as string) : undefined;
 
     if (search) {
-      query += ` text ILIKE $${numArgs}`;
-      values.push(`%${search}%`);
-      numArgs++;
-    } else {
-      // query += ' 1=1';
+      whereInput.text = { contains: search as string };
     }
 
     if (completed) {
-        if (search) {
-            query += '  ' + search ? ' AND' : '';
-            query += ` completed = $${numArgs}`;
-        } else {
-            query += ` completed = $${numArgs}`;
-        }
-      values.push(completed);
+      whereInput.completed = { equals: completed === 'true' };
     }
 
-    
-    if (size) {
-        query += ` LIMIT ${size}`;
+    const results = await db.todo.findMany({
+      where: whereInput,
+      take: limit,
+      orderBy: {
+        id: 'desc',
       }
-    const { rows } = await pool.query(query, values);
-    res.status(200).json(rows);
+    });
+    res.status(200).json(results);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

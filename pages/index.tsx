@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -9,11 +9,9 @@ import {
   Paper,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Accordion from '@mui/material/Accordion';
 import useSWR, { useSWRConfig } from 'swr';
 import classes from './index.module.css';
 
