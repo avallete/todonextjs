@@ -14,14 +14,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import useSWR, { useSWRConfig } from 'swr';
 import classes from './index.module.css';
+import type { TodoItem } from '@/utils/types';
 
 
 const maxTodoListItems = 10;
-interface TodoItem {
-  id: string;
-  text: string;
-  completed: boolean;
-}
 const App = () => {
   const [todoItemText, setTodoItemText] = useState(''); // text of the new to-do item [controlled component
   const [searchText, setSearchText] = useState('');
@@ -194,6 +190,10 @@ const App = () => {
                     label={item.text}
                     className={classes.checkbox}
                   />
+                  <div>
+                    <p>Upvotes: {item.upvoteCount}</p>
+                    <p>Downvotes: {item.downvoteCount}</p>
+                  </div>
                 </div>
             ))}
           </Grid>

@@ -2,7 +2,7 @@
 type JsonPrimitive = null | number | string | boolean;
 type Nested<V> = V | { [s: string]: V | Nested<V> } | Array<V | Nested<V>>;
 type Json = Nested<JsonPrimitive>;
-
+type Enum_public_vote_value = 'DOWNVOTE' | 'UPVOTE';
 interface Table_public_prisma_migrations {
   id: string;
   checksum: string;
@@ -19,9 +19,16 @@ interface Table_public_todo {
   completed: boolean;
   created_at: string;
 }
+interface Table_public_vote {
+  id: number;
+  todo_id: number;
+  value: Enum_public_vote_value;
+  created_at: string;
+}
 interface Schema_public {
   _prisma_migrations: Table_public_prisma_migrations;
   todo: Table_public_todo;
+  vote: Table_public_vote;
 }
 interface Database {
   public: Schema_public;
@@ -30,7 +37,22 @@ interface Extension {
 
 }
 interface Tables_relationships {
+  "public.todo": {
+    parent: {
 
+    };
+    children: {
+       vote_todo_id_fkey: "public.vote";
+    };
+  };
+  "public.vote": {
+    parent: {
+       vote_todo_id_fkey: "public.todo";
+    };
+    children: {
+
+    };
+  };
 }
 //#endregion
 

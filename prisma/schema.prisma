@@ -12,4 +12,19 @@ model todo {
   text       String
   completed  Boolean  @default(false)
   created_at DateTime @default(now()) @db.Timestamp(6)
+  votes      vote[]
+}
+
+
+enum vote_value {
+  UPVOTE
+  DOWNVOTE
+}
+
+model vote {
+  id        Int      @id @default(autoincrement())
+  todo_id   Int
+  todo      todo     @relation(fields: [todo_id], references: [id])      
+  value     vote_value @default(UPVOTE)
+  created_at DateTime @default(now()) @db.Timestamp(6)
 }
