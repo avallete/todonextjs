@@ -19,33 +19,12 @@ Before running this project, you will need the following installed on your syste
 
 1. Clone the repository to your local machine.
 2. Open a terminal and navigate to the project directory.
-3. In the terminal, run `npm install` or `yarn` to install the project dependencies.
-4. Create a new PostgreSQL database for this project.
-5. Set the following environment variables in the `.env` file in your project root directory:
-
-```
-PGHOST=localhost
-PGPORT=5432
-PGDATABASE=your_database_name
-PGUSER=your_database_username
-PGPASSWORD=your_database_password
-```
-
-Replace `your_database_name`, `your_database_username`, and `your_database_password` with the appropriate values for your PostgreSQL database.
-
-Ensure that the database has a table called `todo` on it
-
-```sql
-CREATE TABLE todo (
-  id SERIAL PRIMARY KEY,
-  text TEXT NOT NULL,
-  completed BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-```
-
-6. In the terminal, run `npm run dev` or `yarn dev` to start the development server.
+3. In the terminal, run `npm install` install the project dependencies.
+4. Copy `.env.example` to `.env` and adjust the `DATABASE_URL` to match your local configuration
+5. Run `npx prisma migrate deploy`
+6. In the terminal, run `npm run dev` to start the development server.
 7. Open a web browser and navigate to `http://localhost:3000` to view the running application.
+8. To seed your database automatically via Snaplet run `npm run seed`
 
 ## Available Scripts
 
@@ -66,6 +45,10 @@ Starts the application in production mode. The application must be built before 
 ### `npm run lint` or `yarn lint`
 
 Runs the linter to check for any syntax or code style issues.
+
+### `npm run seed`
+
+Run snaplet generate to generate the seed data for the application.
 
 ## Conclusion
 

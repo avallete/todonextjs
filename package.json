@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "dotenv snaplet generate",
+    "snaplet": "dotenv snaplet"
   },
   "dependencies": {
     "@emotion/react": "^11.10.8",
@@ -21,10 +23,12 @@
     "prisma": "^5.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "snaplet": "^0.74.2",
     "swr": "^2.1.5",
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "@types/pg": "^8.6.6"
+    "@types/pg": "^8.6.6",
+    "dotenv-cli": "^7.3.0"
   }
 }
