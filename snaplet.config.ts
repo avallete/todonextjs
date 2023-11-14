@@ -12,9 +12,9 @@ export default defineConfig({
       //
       // For more on how to do this, check out the docs:
       // https://docs.snaplet.dev/reference/configuration#generate
-        await snaplet.todo((x) => x(10, (todoIndex) => ({
+        await snaplet.todo((x) => x(100, (todoIndex) => ({
           vote: (x) => x(
-            5, (voteIndex) => ({ value: copycat.oneOf(`${todoIndex}/${voteIndex}`, ["UPVOTE", "DOWNVOTE"]) })
+            20, (voteIndex) => ({ value: copycat.oneOf(`${todoIndex}/${voteIndex}`, ["UPVOTE", "DOWNVOTE"]) })
           ),
         })),
         {autoConnect: true}
