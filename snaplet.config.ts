@@ -12,7 +12,7 @@ export default defineConfig({
       //
       // For more on how to do this, check out the docs:
       // https://docs.snaplet.dev/reference/configuration#generate
-      await snaplet.todo((x) => x(100));
+      await snaplet.todo((x) => x(1000));
     },
   },
 });
