@@ -42,11 +42,13 @@ export default async function handler(
       break;
     case 'POST':
       try {
+        const firstUser = await db.user.findFirstOrThrow();
         const { text, completed } = req.body;
         const result = await db.todo.create({
           data: {
             text,
             completed,
+            created_by_id: firstUser?.id,
           },
         });
         res.status(201).json(result);
