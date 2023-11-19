@@ -9,9 +9,9 @@ export default defineConfig({
     async run(snaplet) {
       await snaplet.$pipe([
         snaplet.user((x) => x(5)),
-        snaplet.todo((x) => x(100, () => ({
+        snaplet.todo((x) => x(20, () => ({
           vote: (x) => x(
-            20, () => ({
+            5, () => ({
               value: ({seed}) => copycat.oneOf(seed, ["UPVOTE" as const, "DOWNVOTE" as const])
             })
           )
