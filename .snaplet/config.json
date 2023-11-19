@@ -1,0 +1,4 @@
+{
+  "sourceDatabaseUrl": "postgresql://postgres@localhost:5432/snaplet_todoappnextjs?schema=public",
+  "targetDatabaseUrl": "postgresql://postgres@localhost:5432/snaplet_todoappnextjs?schema=public"
+}

@@ -295,6 +295,7 @@ type CreateStore = <T extends Partial<Store>>(
 type Store = {
   _prisma_migrations: Array<_prisma_migrationsScalars>;
   todo: Array<todoScalars>;
+  user: Array<userScalars>;
   vote: Array<voteScalars>;
 };
 type vote_valueEnum = "DOWNVOTE" | "UPVOTE";
@@ -365,9 +366,16 @@ type todoScalars = {
    * Column `todo.created_at`.
    */
   created_at?: string;
+  /**
+   * Column `todo.created_by_id`.
+   */
+  created_by_id: number;
 }
 type todoParentsInputs<TPath extends string[]> = {
-
+  /**
+   * Relationship from table `todo` to table `user` through the column `todo.created_by_id`.
+   */
+  user: OmitParentInputs<userParentInputs<[...TPath, "user"]>, "todo", [...TPath, "user"]>;
 };
 type todoChildrenInputs<TPath extends string[]> = {
   /**
@@ -383,6 +391,51 @@ type todoInputs<TPath extends string[]> = Inputs<
 type todoChildInputs<TPath extends string[]> = ChildInputs<todoInputs<TPath>>;
 type todoParentInputs<TPath extends string[]> = ParentInputs<
 todoInputs<TPath>,
+  TPath
+>;
+type userScalars = {
+  /**
+   * Column `user.id`.
+   */
+  id?: number;
+  /**
+   * Column `user.name`.
+   */
+  name: string;
+  /**
+   * Column `user.email`.
+   */
+  email: string;
+  /**
+   * Column `user.password`.
+   */
+  password: string;
+  /**
+   * Column `user.created_at`.
+   */
+  created_at?: string;
+}
+type userParentsInputs<TPath extends string[]> = {
+
+};
+type userChildrenInputs<TPath extends string[]> = {
+  /**
+  * Relationship from table `user` to table `todo` through the column `todo.created_by_id`.
+  */
+  todo: OmitChildInputs<todoChildInputs<[...TPath, "todo"]>, "user" | "created_by_id">;
+  /**
+  * Relationship from table `user` to table `vote` through the column `vote.created_by_id`.
+  */
+  vote: OmitChildInputs<voteChildInputs<[...TPath, "vote"]>, "user" | "created_by_id">;
+};
+type userInputs<TPath extends string[]> = Inputs<
+  userScalars,
+  userParentsInputs<TPath>,
+  userChildrenInputs<TPath>
+>;
+type userChildInputs<TPath extends string[]> = ChildInputs<userInputs<TPath>>;
+type userParentInputs<TPath extends string[]> = ParentInputs<
+userInputs<TPath>,
   TPath
 >;
 type voteScalars = {
@@ -402,12 +455,20 @@ type voteScalars = {
    * Column `vote.created_at`.
    */
   created_at?: string;
+  /**
+   * Column `vote.created_by_id`.
+   */
+  created_by_id: number;
 }
 type voteParentsInputs<TPath extends string[]> = {
   /**
    * Relationship from table `vote` to table `todo` through the column `vote.todo_id`.
    */
   todo: OmitParentInputs<todoParentInputs<[...TPath, "todo"]>, "vote", [...TPath, "todo"]>;
+  /**
+   * Relationship from table `vote` to table `user` through the column `vote.created_by_id`.
+   */
+  user: OmitParentInputs<userParentInputs<[...TPath, "user"]>, "vote", [...TPath, "user"]>;
 };
 type voteChildrenInputs<TPath extends string[]> = {
 
@@ -434,7 +495,7 @@ type _prisma_migrationsGraph = Array<{
   Children: _prisma_migrationsChildrenGraph;
 }>;
 type todoParentsGraph = {
-
+ user: OmitChildGraph<userGraph, "todo">;
 };
 type todoChildrenGraph = {
  vote: OmitParentGraph<voteGraph, "todo">;
@@ -444,8 +505,21 @@ type todoGraph = Array<{
   Parents: todoParentsGraph;
   Children: todoChildrenGraph;
 }>;
+type userParentsGraph = {
+
+};
+type userChildrenGraph = {
+ todo: OmitParentGraph<todoGraph, "user">;
+ vote: OmitParentGraph<voteGraph, "user">;
+};
+type userGraph = Array<{
+  Scalars: userScalars;
+  Parents: userParentsGraph;
+  Children: userChildrenGraph;
+}>;
 type voteParentsGraph = {
  todo: OmitChildGraph<todoGraph, "vote">;
+ user: OmitChildGraph<userGraph, "vote">;
 };
 type voteChildrenGraph = {
 
@@ -458,6 +532,7 @@ type voteGraph = Array<{
 type Graph = {
   _prisma_migrations: _prisma_migrationsGraph;
   todo: todoGraph;
+  user: userGraph;
   vote: voteGraph;
 };
 type ScalarField = {
@@ -496,6 +571,20 @@ type Override = {
       text?: string;
       completed?: string;
       created_at?: string;
+      created_by_id?: string;
+      user?: string;
+      vote?: string;
+    };
+  }
+  user?: {
+    name?: string;
+    fields?: {
+      id?: string;
+      name?: string;
+      email?: string;
+      password?: string;
+      created_at?: string;
+      todo?: string;
       vote?: string;
     };
   }
@@ -506,7 +595,9 @@ type Override = {
       todo_id?: string;
       value?: string;
       created_at?: string;
+      created_by_id?: string;
       todo?: string;
+      user?: string;
     };
   }}
 export type Alias = {
@@ -552,6 +643,26 @@ export declare class SnapletClientBase {
    */
   todo: (
     inputs: todoChildInputs<["todo"]>,
+    options?: PlanOptions,
+  ) => Plan;
+  /**
+   * Generate one or more `user`.
+   * @example With static inputs:
+   * ```ts
+   * snaplet.user([{}, {}]);
+   * ```
+   * @example Using the `x` helper:
+   * ```ts
+   * snaplet.user((x) => x(3));
+   * snaplet.user((x) => x({ min: 1, max: 10 }));
+   * ```
+   * @example Mixing both:
+   * ```ts
+   * snaplet.user((x) => [{}, ...x(3), {}]);
+   * ```
+   */
+  user: (
+    inputs: userChildInputs<["user"]>,
     options?: PlanOptions,
   ) => Plan;
   /**

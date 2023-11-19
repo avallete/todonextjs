@@ -12,6 +12,8 @@ model todo {
   text       String
   completed  Boolean  @default(false)
   created_at DateTime @default(now()) @db.Timestamp(6)
+  created_by_id Int
+  created_by user     @relation(fields: [created_by_id], references: [id])
   votes      vote[]
 }
 
@@ -27,4 +29,16 @@ model vote {
   todo      todo     @relation(fields: [todo_id], references: [id])      
   value     vote_value @default(UPVOTE)
   created_at DateTime @default(now()) @db.Timestamp(6)
+  created_by_id Int
+  created_by user     @relation(fields: [created_by_id], references: [id])
+}
+
+model user {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  todos     todo[]
+  votes     vote[]
 }

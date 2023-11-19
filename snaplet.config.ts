@@ -7,18 +7,18 @@ copycat.setHashKey("+6G/0WCWRdSsNesA");
 export default defineConfig({
   generate: {
     async run(snaplet) {
-      // This is an example generate plan. It's a starting point, but you'll probably need to
-      // give snaplet more detail about the plan for it to fit your application logic better.
-      //
-      // For more on how to do this, check out the docs:
-      // https://docs.snaplet.dev/reference/configuration#generate
-        await snaplet.todo((x) => x(100, (todoIndex) => ({
+      await snaplet.$pipe([
+        snaplet.user((x) => x(5)),
+        snaplet.todo((x) => x(100, () => ({
           vote: (x) => x(
-            20, (voteIndex) => ({ value: copycat.oneOf(`${todoIndex}/${voteIndex}`, ["UPVOTE", "DOWNVOTE"]) })
-          ),
+            20, () => ({
+              value: ({seed}) => copycat.oneOf(seed, ["UPVOTE" as const, "DOWNVOTE" as const])
+            })
+          )
         })),
         {autoConnect: true}
-      );
+      )
+    ]) 
     },
   },
 });

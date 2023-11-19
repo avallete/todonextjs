@@ -18,16 +18,26 @@ interface Table_public_todo {
   text: string;
   completed: boolean;
   created_at: string;
+  created_by_id: number;
+}
+interface Table_public_user {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  created_at: string;
 }
 interface Table_public_vote {
   id: number;
   todo_id: number;
   value: Enum_public_vote_value;
   created_at: string;
+  created_by_id: number;
 }
 interface Schema_public {
   _prisma_migrations: Table_public_prisma_migrations;
   todo: Table_public_todo;
+  user: Table_public_user;
   vote: Table_public_vote;
 }
 interface Database {
@@ -39,15 +49,25 @@ interface Extension {
 interface Tables_relationships {
   "public.todo": {
     parent: {
-
+       todo_created_by_id_fkey: "public.user";
     };
     children: {
        vote_todo_id_fkey: "public.vote";
     };
   };
+  "public.user": {
+    parent: {
+
+    };
+    children: {
+       todo_created_by_id_fkey: "public.todo";
+       vote_created_by_id_fkey: "public.vote";
+    };
+  };
   "public.vote": {
     parent: {
        vote_todo_id_fkey: "public.todo";
+       vote_created_by_id_fkey: "public.user";
     };
     children: {
 
