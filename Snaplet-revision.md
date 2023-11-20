@@ -36,7 +36,7 @@ Here's how `snaplet` operates:
 Setting it up is as simple as:
 
 ```bash
-npx snaplet setup
+npm install -D snaplet && npx snaplet setup
 ```
 
 This process generates a `snaplet.config.ts` file:
@@ -165,27 +165,48 @@ export default defineConfig({
         // 2. We create our first 5 initials users
         snaplet.user((x) => x(5)),
         // 3. We want to create 20 todos
-        snaplet.todo((x) => x(20, () => ({
-          vote: (x) => x(
-            // 5. For each todo, we want to create 5 votes
-            5, () => ({
-              // 6. Each vote value should be either an upvote or a downvote
-              value: ({seed}) => copycat.oneOf(seed, ["UPVOTE" as const, "DOWNVOTE" as const])
-            })
-          )})),
-	      // 4. By using this option we're telling:
-	      // "generated data should try to connect with existing data rather than create new one"
-	      // Since we already created 5 users, everything related to "users" in our todo will pick
-	      // and connect with one of them for each created todo
-          {autoConnect: true}
-        )
-	  ]) 
+        snaplet.todo(
+          (x) =>
+            x(20, () => ({
+              vote: (x) =>
+                x(
+                  // 5. For each todo, we want to create 5 votes
+                  5,
+                  () => ({
+                    // 6. Each vote value should be either an upvote or a downvote
+                    value: ({ seed }) =>
+                      copycat.oneOf(seed, [
+                        "UPVOTE" as const,
+                        "DOWNVOTE" as const,
+                      ]),
+                  })
+                ),
+            })),
+          // 4. By using this option we're telling:
+          // "generated data should try to connect with existing data rather than create new one"
+          // Since we already created 5 users, everything related to "users" in our todo will pick
+          // and connect with one of them for each created todo
+          { autoConnect: true }
+        ),
+      ]);
     },
   },
 });
 ```
 
 This comprehensive approach saves us from maintaining a lengthy and complex seed script (the generated SQL is now 120 lines long), illustrating why at Snaplet, we advocate for a declarative, database-aware, and auto-filled methodology. It's about creating and maintaining a dynamic, production-like development environment with ease.
+
+### Conclusion
+In our exploration of `snaplet generate`, we've seen its capability in simplifying the creation and maintenance of seed scripts, particularly as your project requirements evolve. It stands as a robust tool in your development toolkit, adapting seamlessly to changes and enhancements in your project.
+
+For those looking to delve deeper, we have an additional resource that showcases `generate` in a more complex scenario: a "Slack app clone" database. This article offers a deeper insight into the practical applications of `snaplet generate` in a real-world example. You can explore this further [here](link to hasura slack clone article).
+
+For a comprehensive understanding of all the features, our [generate documentation](https://docs.snaplet.dev/core-concepts/generate) is an invaluable resource. It covers everything you need to know to make the most out of `generate`.
+
+We also highly value community engagement and feedback. If you have any use cases, questions, or suggestions about `generate`, we would love to hear from you. Join our conversation on our [Discord Server](https://discord.gg/traBYqnysU). 
+Let's make generate not just a tool, but a community-driven powerhouse.
+
+Happy seeding, and see you on Discord!
 
 ---
 
